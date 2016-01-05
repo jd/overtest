@@ -1,0 +1,23 @@
+#!/bin/bash
+overtest_find_executable pg_config
+PGSQL_PATH=`pg_config --bindir`
+PGCTL="$PGSQL_PATH/pg_ctl"
+overtest_find_executable "$PGCTL"
+
+overtest_start_postgresql ()
+{
+    export OVERTEST_POSTGRESQL_PORT=${OVERTEST_POSTGRESQL_PORT:-9824}
+    export PGPORT=$OVERTEST_POSTGRESQL_PORT
+    export OVERTEST_POSTGRESQL_DATA="`overtest_make_temp_dir postgresql`"
+    export PGHOST=$OVERTEST_POSTGRESQL_DATA
+    export PGDATA=$OVERTEST_POSTGRESQL_DATA
+    export OVERTEST_POSTGRESQL_URL="postgresql:///?host=${OVERTEST_POSTGRESQL_DATA}&port=${OVERTEST_POSTGRESQL_PORT}&dbname=template1"
+    "$PGCTL" initdb
+    "$PGCTL" -w -o "-k ${OVERTEST_POSTGRESQL_DATA} -p ${OVERTEST_POSTGRESQL_PORT}" start
+}
+
+overtest_stop_postgresql ()
+{
+    "${PGSQL_PATH}/pg_ctl" -w -o "-p $OVERTEST_POSTGRESQL_PORT" stop
+    rm -rf "${OVERTEST_POSTGRESQL_DATA}"
+}

@@ -1,0 +1,41 @@
+#!/bin/bash
+set -e
+
+OVERTEST_LIBS_PATH=${OVERTEST_LIBS_PATH:-lib}
+
+overtest_make_temp_dir ()
+{
+    PROJECT=${1:-unknown}
+    mktemp -d -t overtest-$PROJECT-XXXXXX
+}
+
+overtest_find_executable ()
+{
+    if ! which "$1" >/dev/null 2>&1
+    then
+        echo "E: $1 not found"
+    fi
+}
+
+overtest_stop ()
+{
+    echo "I: stopping $OVERTEST_DAEMON"
+    overtest_stop_${OVERTEST_DAEMON}
+}
+
+overtest_parse_options ()
+{
+    OVERTEST_DAEMON=$1
+    echo "I: starting $OVERTEST_DAEMON"
+    source "${OVERTEST_LIBS_PATH}/${OVERTEST_DAEMON}"
+    trap overtest_stop EXIT
+    overtest_start_${OVERTEST_DAEMON}
+
+    shift
+
+    if [ -n "$1" ]
+    then
+        echo "I: executing command: $*"
+        $*
+    fi
+}
