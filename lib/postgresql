@@ -11,7 +11,7 @@ overtest_start_postgresql ()
     export OVERTEST_POSTGRESQL_DATA="`overtest_make_temp_dir postgresql`"
     export PGHOST=$OVERTEST_POSTGRESQL_DATA
     export PGDATA=$OVERTEST_POSTGRESQL_DATA
-    export OVERTEST_POSTGRESQL_URL="postgresql:///?host=${OVERTEST_POSTGRESQL_DATA}&port=${OVERTEST_POSTGRESQL_PORT}&dbname=template1"
+    export OVERTEST_POSTGRESQL_URL="postgresql:///template1?host=${OVERTEST_POSTGRESQL_DATA}&port=${OVERTEST_POSTGRESQL_PORT}"
     overtest_debug || PGCTL_OPTIONS="-s"
     $PGCTL $PGCTL_OPTIONS -o '-A trust' initdb
     overtest_run "$PGCTL $PGCTL_OPTIONS -w -o '-k ${OVERTEST_POSTGRESQL_DATA} -p ${OVERTEST_POSTGRESQL_PORT}' start"
