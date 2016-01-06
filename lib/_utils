@@ -1,5 +1,4 @@
 #!/bin/bash
-set -e
 
 overtest_debug ()
 {
@@ -43,8 +42,14 @@ overtest_stop ()
 overtest_parse_options ()
 {
     OVERTEST_DAEMON=$1
+    local daemon_lib=${OVERTEST_LIBS_PATH}/${OVERTEST_DAEMON}
+    if [ ! -f $daemon_lib ]
+    then
+       echo "E: unknown daemon $OVERTEST_DAEMON"
+       return 1
+    fi
     echo "I: starting $OVERTEST_DAEMON"
-    source "${OVERTEST_LIBS_PATH}/${OVERTEST_DAEMON}"
+    source $daemon_lib
     trap overtest_stop EXIT
     overtest_start_${OVERTEST_DAEMON}
     echo "I: started $OVERTEST_DAEMON"

@@ -1,5 +1,6 @@
 #!/bin/bash
 # -*- mode: shell-script -*-
+set -e
 
 OVERTEST_PREFIX=${OVERTEST_PREFIX:-$(dirname $(realpath $0))/..}
 OVERTEST_LIBS_PATH=${OVERTEST_LIBS_PATH:-${OVERTEST_PREFIX}/share/overtest/lib}
