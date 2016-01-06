@@ -39,14 +39,32 @@ overtest_stop ()
     echo "I: stopped $OVERTEST_DAEMON"
 }
 
+overtest_usage ()
+{
+    echo "Usage: $(basename $0) <daemon> [command]"
+    echo
+    echo "Known daemons:"
+    for f in $OVERTEST_LIBS_PATH/*
+    do
+        f=$(basename $f)
+        [ "$f" != "_utils" ] && echo " - $f"
+    done
+}
+
 overtest_parse_options ()
 {
+    case $1 in
+        --help|-h)
+            overtest_usage
+            return 1
+            ;;
+    esac
     OVERTEST_DAEMON=$1
     local daemon_lib=${OVERTEST_LIBS_PATH}/${OVERTEST_DAEMON}
     if [ ! -f $daemon_lib ]
     then
        echo "E: unknown daemon $OVERTEST_DAEMON"
-       return 1
+       return 2
     fi
     echo "I: starting $OVERTEST_DAEMON"
     source $daemon_lib
