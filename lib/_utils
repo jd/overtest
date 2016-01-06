@@ -14,8 +14,6 @@ else
     OVERTEST_OUTPUT=/dev/null
 fi
 
-OVERTEST_LIBS_PATH=${OVERTEST_LIBS_PATH:-lib}
-
 overtest_run ()
 {
     eval "$@" > $OVERTEST_OUTPUT 2>&1

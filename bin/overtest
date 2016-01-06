@@ -1,4 +1,7 @@
 #!/bin/bash
 # -*- mode: shell-script -*-
-source lib/_utils
+
+OVERTEST_PREFIX=${OVERTEST_PREFIX:-$(dirname $(realpath $0))/..}
+OVERTEST_LIBS_PATH=${OVERTEST_LIBS_PATH:-${OVERTEST_PREFIX}/share/overtest/lib}
+source $OVERTEST_LIBS_PATH/_utils
 overtest_parse_options $*
