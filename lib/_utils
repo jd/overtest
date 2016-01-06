@@ -57,3 +57,18 @@ overtest_parse_options ()
         $*
     fi
 }
+
+overtest_wait_for_line ()
+{
+    local PATTERN=$1
+    local FILE=$2
+    FOUND=1
+    while read line
+    do
+        echo "$line" | grep -q "$PATTERN" && FOUND=0 && break
+    done < "$FILE"
+    # Read the FIFO forever otherwise process would block
+    overtest_run cat "$FILE" &
+    return $FOUND
+}
+

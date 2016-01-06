@@ -1,0 +1,26 @@
+#!/bin/bash
+overtest_find_executable mysqld
+
+overtest_start_mysql ()
+{
+    export OVERTEST_MYSQL_DATA=`overtest_make_temp_dir mysql`
+    export OVERTEST_MYSQL_SOCKET=${OVERTEST_MYSQL_DATA}/mysql.socket
+    export OVERTEST_MYSQL_URL=mysql://root@localhost/mysql?unix_socket=${OVERTEST_MYSQL_SOCKET}
+    overtest_debug && MYSQLD_OPTIONS="-s"
+    overtest_run mysqld ${MYSQL_OPTIONS} --initialize-insecure --datadir=${OVERTEST_MYSQL_DATA}
+    mkfifo ${OVERTEST_MYSQL_DATA}/out
+    mysqld ${MYSQL_OPTIONS} \
+           --datadir=${OVERTEST_MYSQL_DATA} \
+           --pid-file=${OVERTEST_MYSQL_DATA}/mysql.pid \
+           --socket=${OVERTEST_MYSQL_SOCKET} \
+           --skip-networking \
+           --skip-grant-tables \
+    &> ${OVERTEST_MYSQL_DATA}/out 2>&1 &
+    overtest_wait_for_line "mysqld: ready for connections." ${OVERTEST_MYSQL_DATA}/out
+}
+
+overtest_stop_mysql ()
+{
+    kill `cat $OVERTEST_MYSQL_DATA/mysql.pid`
+    rm -rf ${OVERTEST_MYSQL_DATA}
+}
