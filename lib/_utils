@@ -39,6 +39,7 @@ overtest_stop ()
 {
     echo "I: stopping $OVERTEST_DAEMON"
     overtest_stop_${OVERTEST_DAEMON}
+    echo "I: stopped $OVERTEST_DAEMON"
 }
 
 overtest_parse_options ()
@@ -48,6 +49,7 @@ overtest_parse_options ()
     source "${OVERTEST_LIBS_PATH}/${OVERTEST_DAEMON}"
     trap overtest_stop EXIT
     overtest_start_${OVERTEST_DAEMON}
+    echo "I: started $OVERTEST_DAEMON"
 
     shift
 
