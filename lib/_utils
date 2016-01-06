@@ -1,7 +1,25 @@
 #!/bin/bash
 set -e
 
+overtest_debug ()
+{
+    [ -n "$OVERTEST_DEBUG" ]
+}
+
+if overtest_debug
+then
+    set -x
+    OVERTEST_OUTPUT=/dev/stdout
+else
+    OVERTEST_OUTPUT=/dev/null
+fi
+
 OVERTEST_LIBS_PATH=${OVERTEST_LIBS_PATH:-lib}
+
+overtest_run ()
+{
+    eval "$@" > $OVERTEST_OUTPUT 2>&1
+}
 
 overtest_make_temp_dir ()
 {
