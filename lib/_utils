@@ -59,7 +59,7 @@ overtest_parse_options ()
             return 1
             ;;
     esac
-    OVERTEST_DAEMON=$1
+    export OVERTEST_DAEMON=$1
     local daemon_lib=${OVERTEST_LIBS_PATH}/${OVERTEST_DAEMON}
     if [ ! -f $daemon_lib ]
     then
