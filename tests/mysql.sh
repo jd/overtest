@@ -5,6 +5,7 @@ testEnvironment ()
 {
     assertEquals mysql ${OVERTEST_DAEMON}
     assertEquals "mysql://root@localhost/mysql?unix_socket=${OVERTEST_MYSQL_DATA}/mysql.socket" ${OVERTEST_MYSQL_URL}
+    assertEquals ${OVERTEST_URL} ${OVERTEST_MYSQL_URL}
 }
 
 

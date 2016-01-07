@@ -70,6 +70,8 @@ overtest_parse_options ()
     source $daemon_lib
     trap overtest_stop EXIT
     overtest_start_${OVERTEST_DAEMON}
+    local daemon_up=$(echo $OVERTEST_DAEMON | tr '[:lower:]' '[:upper:]')
+    eval export OVERTEST_URL=\${OVERTEST_${daemon_up}_URL}
     echo "I: started $OVERTEST_DAEMON"
 
     shift
