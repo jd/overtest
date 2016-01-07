@@ -61,7 +61,8 @@ Environment variables
 =====================
 Overtest exports a few environment variable:
 
-* `OVERTEST_DAEMON` which contains the daemon ran
+* `OVERTEST_DAEMON` which contains the name of the daemon launched
+* `OVERTEST_URL` which contains the URL to the daemon
 * `OVERTEST_$daemon_*` variables, which contains daemon specific variables,
   such as port, database name, URL, etc.
 
