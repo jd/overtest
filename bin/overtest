@@ -2,7 +2,7 @@
 # -*- mode: shell-script -*-
 set -e
 
-OVERTEST_PREFIX=${OVERTEST_PREFIX:-$(dirname $(realpath $BASH_SOURCE))/..}
+OVERTEST_PREFIX=${OVERTEST_PREFIX:-$(dirname $BASH_SOURCE)/..}
 OVERTEST_LIBS_PATH=${OVERTEST_LIBS_PATH:-${OVERTEST_PREFIX}/share/overtest/lib}
 source $OVERTEST_LIBS_PATH/_utils
 overtest_parse_options $*
