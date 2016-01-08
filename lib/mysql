@@ -7,7 +7,9 @@ overtest_start_mysql ()
     export OVERTEST_MYSQL_SOCKET=${OVERTEST_MYSQL_DATA}/mysql.socket
     export OVERTEST_MYSQL_URL=mysql://root@localhost/mysql?unix_socket=${OVERTEST_MYSQL_SOCKET}
     overtest_debug && MYSQLD_OPTIONS="-s"
-    overtest_run mysqld ${MYSQL_OPTIONS} --initialize-insecure --datadir=${OVERTEST_MYSQL_DATA}
+    # Do not fail if this command fails. It's not a big deal, some older
+    # version of MySQL don't need nor have this init step
+    overtest_run mysqld ${MYSQL_OPTIONS} --initialize-insecure --datadir=${OVERTEST_MYSQL_DATA} || true
     mkfifo ${OVERTEST_MYSQL_DATA}/out
     mysqld ${MYSQL_OPTIONS} \
            --datadir=${OVERTEST_MYSQL_DATA} \
