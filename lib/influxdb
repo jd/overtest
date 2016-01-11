@@ -1,0 +1,38 @@
+#!/bin/bash
+overtest_find_executable influxd
+
+overtest_start_influxdb ()
+{
+    export OVERTEST_INFLUXDB_PORT=${OVERTEST_INFLUXDB_PORT:-51234}
+    export OVERTEST_INFLUXDB_DATA="`overtest_make_temp_dir influxdb`"
+    export OVERTEST_INFLUXDB_URL="influxdb://localhost:${OVERTEST_INFLUXDB_PORT}"
+    mkdir ${OVERTEST_INFLUXDB_DATA}/{broker,data,meta,hh,wal}
+    mkfifo ${OVERTEST_INFLUXDB_DATA}/out
+
+    cat > $OVERTEST_INFLUXDB_DATA/config <<EOF
+[meta]
+   dir = "${OVERTEST_INFLUXDB_DATA}/meta"
+   bind-address = ":51233"
+[admin]
+  enabled = false
+[data]
+  dir = "${OVERTEST_INFLUXDB_DATA}/data"
+  wal-dir = "${OVERTEST_INFLUXDB_DATA}/wal"
+[http]
+  bind-address  = ":$OVERTEST_INFLUXDB_PORT"
+[hinted-handoff]
+  dir = "${OVERTEST_INFLUXDB_DATA}/hh"
+[retention]
+  enabled = true
+EOF
+    # Influxdb distributed rpms and debs install to opt by default
+    PATH=$PATH:/opt/influxdb influxd -config $OVERTEST_INFLUXDB_DATA/config > ${OVERTEST_INFLUXDB_DATA}/out 2>&1 &
+    OVERTEST_INFLUXDB_PID=$!
+    overtest_wait_for_line "Listening on HTTP" $OVERTEST_INFLUXDB_DATA/out
+}
+
+overtest_stop_influxdb ()
+{
+    kill $OVERTEST_INFLUXDB_PID
+    rm -rf ${OVERTEST_INFLUXDB_DATA}
+}
