@@ -5,7 +5,7 @@ overtest_start_mysql ()
 {
     export OVERTEST_MYSQL_DATA=`overtest_make_temp_dir mysql`
     export OVERTEST_MYSQL_SOCKET=${OVERTEST_MYSQL_DATA}/mysql.socket
-    export OVERTEST_MYSQL_URL=mysql://root@localhost/mysql?unix_socket=${OVERTEST_MYSQL_SOCKET}
+    export OVERTEST_MYSQL_URL=mysql://root@localhost/test?unix_socket=${OVERTEST_MYSQL_SOCKET}
     overtest_debug && MYSQLD_OPTIONS="-s"
     # Do not fail if this command fails. It's not a big deal, some older
     # version of MySQL don't need nor have this init step
@@ -19,6 +19,7 @@ overtest_start_mysql ()
            --skip-grant-tables \
     &> ${OVERTEST_MYSQL_DATA}/out 2>&1 &
     overtest_wait_for_line "mysqld: ready for connections." ${OVERTEST_MYSQL_DATA}/out
+    mysql --no-defaults -S ${OVERTEST_MYSQL_SOCKET} -e 'CREATE DATABASE test;'
 }
 
 overtest_stop_mysql ()

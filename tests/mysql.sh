@@ -11,5 +11,5 @@ testEnvironment ()
 
 testMySQL ()
 {
-    mysql -S ${OVERTEST_MYSQL_SOCKET} -e "SHOW TABLES;" mysql
+    mysql --no-defaults -S ${OVERTEST_MYSQL_SOCKET} -e "SHOW TABLES;" test
 }
