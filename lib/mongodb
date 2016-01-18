@@ -1,0 +1,28 @@
+#!/bin/bash
+overtest_find_executable mongod
+
+overtest_start_mongodb ()
+{
+    export OVERTEST_MONGODB_DATA=`overtest_make_temp_dir mongodb`
+    export OVERTEST_MONGODB_PORT=${OVERTEST_MONGODB_PORT:-29000}
+    export OVERTEST_MONGODB_URL=mongodb://localhost:${OVERTEST_MONGODB_PORT}/test
+    mkfifo ${OVERTEST_MONGODB_DATA}/out
+    mongod --nojournal \
+           --noprealloc \
+           --smallfiles \
+           --quiet \
+           --noauth \
+           --port ${OVERTEST_MONGODB_PORT} \
+           --dbpath ${OVERTEST_MONGODB_DATA} \
+           --bind_ip localhost \
+           --config /dev/null \
+    &> ${OVERTEST_MONGODB_DATA}/out 2>&1 &
+    MONGODB_PID=$!
+    overtest_wait_for_line "waiting for connections on port ${OVERTEST_MONGODB_PORT}" ${OVERTEST_MONGODB_DATA}/out
+}
+
+overtest_stop_mongodb ()
+{
+    kill $MONGODB_PID
+    rm -rf ${OVERTEST_MONGODB_DATA}
+}
