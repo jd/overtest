@@ -4,8 +4,9 @@ overtest_find_executable influxd
 overtest_start_influxdb ()
 {
     export OVERTEST_INFLUXDB_PORT=${OVERTEST_INFLUXDB_PORT:-51234}
+    export OVERTEST_INFLUXDB_DATABASE=${OVERTEST_INFLUXDB_DATABASE:-test}
     export OVERTEST_INFLUXDB_DATA="`overtest_make_temp_dir influxdb`"
-    export OVERTEST_INFLUXDB_URL="influxdb://localhost:${OVERTEST_INFLUXDB_PORT}"
+    export OVERTEST_INFLUXDB_URL="influxdb://localhost:${OVERTEST_INFLUXDB_PORT}/test"
     mkdir ${OVERTEST_INFLUXDB_DATA}/{broker,data,meta,hh,wal}
     mkfifo ${OVERTEST_INFLUXDB_DATA}/out
 
@@ -29,6 +30,7 @@ EOF
     PATH=$PATH:/opt/influxdb influxd -config $OVERTEST_INFLUXDB_DATA/config > ${OVERTEST_INFLUXDB_DATA}/out 2>&1 &
     OVERTEST_INFLUXDB_PID=$!
     overtest_wait_for_line "Listening on HTTP" $OVERTEST_INFLUXDB_DATA/out
+    PATH=$PATH:/opt/influxdb influx -port $OVERTEST_INFLUXDB_PORT -execute "CREATE DATABASE ${OVERTEST_INFLUXDB_DATABASE};"
 }
 
 overtest_stop_influxdb ()
