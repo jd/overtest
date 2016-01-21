@@ -1,0 +1,20 @@
+#!/bin/bash
+overtest_find_executable memcached
+
+overtest_start_memcached ()
+{
+    export OVERTEST_MEMCACHED_PORT=${OVERTEST_MEMCACHED_PORT:-11212}
+    export OVERTEST_MEMCACHED_DATA=`overtest_make_temp_dir memcached`
+    export OVERTEST_MEMCACHED_URL=memcached://localhost:${OVERTEST_MEMCACHED_PORT}
+    mkfifo ${OVERTEST_MEMCACHED_DATA}/out
+    memcached -vv -p $OVERTEST_MEMCACHED_PORT \
+        &> ${OVERTEST_MEMCACHED_DATA}/out 2>&1 &
+    OVERTEST_MEMCACHED_PID=$!
+    overtest_wait_for_line "server listening" ${OVERTEST_MEMCACHED_DATA}/out
+}
+
+overtest_stop_memcached ()
+{
+    kill $OVERTEST_MEMCACHED_PID
+    rm -rf ${OVERTEST_MEMCACHED_DATA}
+}
