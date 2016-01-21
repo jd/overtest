@@ -17,12 +17,12 @@ overtest_start_mongodb ()
            --bind_ip localhost \
            --config /dev/null \
     &> ${OVERTEST_MONGODB_DATA}/out 2>&1 &
-    MONGODB_PID=$!
+    OVERTEST_MONGODB_PID=$!
     overtest_wait_for_line "waiting for connections on port ${OVERTEST_MONGODB_PORT}" ${OVERTEST_MONGODB_DATA}/out
 }
 
 overtest_stop_mongodb ()
 {
-    kill $MONGODB_PID
+    kill $OVERTEST_MONGODB_PID
     rm -rf ${OVERTEST_MONGODB_DATA}
 }
