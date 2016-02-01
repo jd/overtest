@@ -13,10 +13,13 @@ Overtest currently supports:
 
 * `PostgreSQL`_
 * `MySQL`_
-
+* `Memcached`_
+* `InfluxDB`_
 
 .. _PostgreSQL: http://postgresql.org
 .. _MySQL: http://mysql.org
+.. _Memcached: http://memcached.org
+.. _InfluxDB: http://influxdb.org
 
 Usage
 =====
