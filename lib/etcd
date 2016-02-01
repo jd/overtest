@@ -1,0 +1,22 @@
+#!/bin/bash
+overtest_find_executable etcd
+
+overtest_start_etcd ()
+{
+    export OVERTEST_ETCD_HTTP_URL=${OVERTEST_ETCD_HTTP_URL:-http://localhost:4001}
+    export OVERTEST_ETCD_URL=${OVERTEST_ETCD_HTTP_URL/#http:/etcd:}
+    export OVERTEST_ETCD_DATA="`overtest_make_temp_dir etcd`"
+    mkfifo ${OVERTEST_ETCD_DATA}/out
+    etcd --data-dir $OVERTEST_ETCD_DATA \
+         --listen-client-urls $OVERTEST_ETCD_HTTP_URL \
+         --advertise-client-urls $OVERTEST_ETCD_HTTP_URL \
+    &> ${OVERTEST_ETCD_DATA}/out 2>&1 &
+    OVERTEST_ETCD_PID=$!
+    overtest_wait_for_line "listening for client requests on" $OVERTEST_ETCD_DATA/out
+}
+
+overtest_stop_etcd ()
+{
+    kill $OVERTEST_ETCD_PID
+    rm -rf ${OVERTEST_ETCD_DATA}
+}
