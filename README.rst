@@ -16,7 +16,7 @@ Overtest currently supports:
 * `Memcached`_
 * `InfluxDB`_
 * `Etcd`_
-* `Redis`_
+* `Redis`_ (with sentinel mode)
 * `Elasticsearch`_
 
 .. _PostgreSQL: http://postgresql.org
@@ -76,3 +76,12 @@ Overtest exports a few environment variable:
   such as port, database name, URL, etc.
 
 .. _integration testing: https://en.wikipedia.org/wiki/Integration_testing
+
+Driver specific options
+=======================
+
+Redis
+-----
+
+The sentinel mode of Redis can be enabled by setting the environment variable
+`OVERTEST_REDIS_SENTINEL_ENABLE` to any value.

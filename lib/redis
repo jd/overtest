@@ -1,5 +1,6 @@
 #!/bin/bash
 overtest_find_executable redis-server
+overtest_find_executable redis-sentinel
 
 overtest_start_redis ()
 {
@@ -12,10 +13,28 @@ overtest_start_redis ()
     &> ${OVERTEST_REDIS_DATA}/out 2>&1 &
     OVERTEST_REDIS_PID=$!
     overtest_wait_for_line "The server is now ready to accept connections on port" $OVERTEST_REDIS_DATA/out
+
+    if [ -n "$OVERTEST_REDIS_SENTINEL_ENABLE" ]
+    then
+        export OVERTEST_REDIS_SENTINEL_PORT=${OVERTEST_REDIS_SENTINEL_PORT:-6380}
+        export OVERTEST_REDIS_URL=redis://localhost:$OVERTEST_REDIS_SENTINEL_PORT?sentinel=overtest
+        mkdir ${OVERTEST_REDIS_DATA}/overtest-sentinel
+        mkfifo ${OVERTEST_REDIS_DATA}/overtest-sentinel/out
+        cat > $OVERTEST_REDIS_DATA/overtest-sentinel/redis-sentinel.conf <<EOF
+dir $OVERTEST_REDIS_DATA
+port ${OVERTEST_REDIS_SENTINEL_PORT}
+sentinel monitor overtest localhost ${OVERTEST_REDIS_PORT} 1
+EOF
+        redis-sentinel $OVERTEST_REDIS_DATA/overtest-sentinel/redis-sentinel.conf \
+            &> ${OVERTEST_REDIS_DATA}/overtest-sentinel/out 2>&1 &
+        OVERTEST_REDIS_SENTINEL_PID=$!
+        overtest_wait_for_line "# Sentinel runid is" $OVERTEST_REDIS_DATA/overtest-sentinel/out
+    fi
 }
 
 overtest_stop_redis ()
 {
     kill $OVERTEST_REDIS_PID
+    test -n "$OVERTEST_REDIS_SENTINEL_PID" && kill $OVERTEST_REDIS_SENTINEL_PID
     rm -rf ${OVERTEST_REDIS_DATA}
 }
