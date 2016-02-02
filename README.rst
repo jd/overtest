@@ -17,6 +17,7 @@ Overtest currently supports:
 * `InfluxDB`_
 * `Etcd`_
 * `Redis`_
+* `Elasticsearch`_
 
 .. _PostgreSQL: http://postgresql.org
 .. _MySQL: http://mysql.org
@@ -24,6 +25,7 @@ Overtest currently supports:
 .. _InfluxDB: http://influxdb.org
 .. _Etcd: https://coreos.com/etcd/
 .. _Redis: http://redis.io/
+.. _Elasticsearch: https://www.elastic.co/
 
 Usage
 =====

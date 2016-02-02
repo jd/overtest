@@ -1,0 +1,23 @@
+#!/bin/bash
+overtest_find_executable elasticsearch
+
+overtest_start_elasticsearch ()
+{
+    export OVERTEST_ELASTICSEARCH_PORT=${OVERTEST_ELASTICSEARCH_PORT:-9200}
+    export OVERTEST_ELASTICSEARCH_URL=es://localhost:$OVERTEST_ELASTICSEARCH_PORT
+    export OVERTEST_ELASTICSEARCH_HTTP_URL=${OVERTEST_ELASTICSEARCH_URL/#es:/http:}
+    export OVERTEST_ELASTICSEARCH_DATA="`overtest_make_temp_dir elasticsearch`"
+    mkfifo ${OVERTEST_ELASTICSEARCH_DATA}/out
+    elasticsearch -Des.http.port=${OVERTEST_ELASTICSEARCH_PORT} \
+                  -Des.path.logs=${OVERTEST_ELASTICSEARCH_DATA}/logs \
+                  -Des.path.data=${OVERTEST_ELASTICSEARCH_DATA} \
+    &> ${OVERTEST_ELASTICSEARCH_DATA}/out 2>&1 &
+    OVERTEST_ELASTICSEARCH_PID=$!
+    overtest_wait_for_line " started" $OVERTEST_ELASTICSEARCH_DATA/out
+}
+
+overtest_stop_elasticsearch ()
+{
+    kill $OVERTEST_ELASTICSEARCH_PID
+    rm -rf ${OVERTEST_ELASTICSEARCH_DATA}
+}
