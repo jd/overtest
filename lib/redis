@@ -1,0 +1,21 @@
+#!/bin/bash
+overtest_find_executable redis-server
+
+overtest_start_redis ()
+{
+    export OVERTEST_REDIS_PORT=${OVERTEST_REDIS_PORT:-6379}
+    export OVERTEST_REDIS_URL=redis://localhost:$OVERTEST_REDIS_PORT
+    export OVERTEST_REDIS_DATA="`overtest_make_temp_dir redis`"
+    mkfifo ${OVERTEST_REDIS_DATA}/out
+    printf "dir $OVERTEST_REDIS_DATA\nport ${OVERTEST_REDIS_PORT}\n" \
+        | redis-server - \
+    &> ${OVERTEST_REDIS_DATA}/out 2>&1 &
+    OVERTEST_REDIS_PID=$!
+    overtest_wait_for_line "The server is now ready to accept connections on port" $OVERTEST_REDIS_DATA/out
+}
+
+overtest_stop_redis ()
+{
+    kill $OVERTEST_REDIS_PID
+    rm -rf ${OVERTEST_REDIS_DATA}
+}

@@ -16,12 +16,14 @@ Overtest currently supports:
 * `Memcached`_
 * `InfluxDB`_
 * `Etcd`_
+* `Redis`_
 
 .. _PostgreSQL: http://postgresql.org
 .. _MySQL: http://mysql.org
 .. _Memcached: http://memcached.org
 .. _InfluxDB: http://influxdb.org
 .. _Etcd: https://coreos.com/etcd/
+.. _Redis: http://redis.io/
 
 Usage
 =====
