@@ -18,6 +18,7 @@ Overtest currently supports:
 * `Etcd`_
 * `Redis`_ (with sentinel mode)
 * `Elasticsearch`_
+* `ZooKeeper`_
 
 .. _PostgreSQL: http://postgresql.org
 .. _MySQL: http://mysql.org
@@ -26,6 +27,7 @@ Overtest currently supports:
 .. _Etcd: https://coreos.com/etcd/
 .. _Redis: http://redis.io/
 .. _Elasticsearch: https://www.elastic.co/
+.. _ZooKeeper: https://zookeeper.apache.org/
 
 Usage
 =====

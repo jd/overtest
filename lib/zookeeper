@@ -1,0 +1,34 @@
+#!/bin/bash
+
+if [ -z "$OVERTEST_ZOOKEEPER_BIN_DIR" ]
+then
+    for dir in /usr/share/zookeeper/bin /usr/local/opt/zookeeper/libexec/bin
+    do
+        if [ -d $dir ]
+        then
+            export OVERTEST_ZOOKEEPER_BIN_DIR=$dir
+            break
+        fi
+    done
+fi
+
+overtest_start_zookeeper ()
+{
+    export OVERTEST_ZOOKEEPER_PORT=${OVERTEST_ZOOKEEPER_PORT:-2181}
+    export OVERTEST_ZOOKEEPER_DATA="`overtest_make_temp_dir zookeeper`"
+    export OVERTEST_ZOOKEEPER_URL="zookeeper://localhost:$OVERTEST_ZOOKEEPER_PORT"
+    export ZOOCFGDIR=$OVERTEST_ZOOKEEPER_DATA
+    cat > $OVERTEST_ZOOKEEPER_DATA/zoo.cfg <<EOF
+dataDir=$OVERTEST_ZOOKEEPER_DATA
+clientPort=$OVERTEST_ZOOKEEPER_PORT
+EOF
+    mkdir $OVERTEST_ZOOKEEPER_DATA/log
+    export ZOO_LOG_DIR=$OVERTEST_ZOOKEEPER_DATA/log
+    $OVERTEST_ZOOKEEPER_BIN_DIR/zkServer.sh start
+}
+
+overtest_stop_zookeeper ()
+{
+    $OVERTEST_ZOOKEEPER_BIN_DIR/zkServer.sh stop
+    rm -rf "${OVERTEST_ZOOKEEPER_DATA}"
+}
