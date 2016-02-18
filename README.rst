@@ -19,6 +19,7 @@ Overtest currently supports:
 * `Redis`_ (with sentinel mode)
 * `Elasticsearch`_
 * `ZooKeeper`_
+* `Gnocchi`_
 
 .. _PostgreSQL: http://postgresql.org
 .. _MySQL: http://mysql.org
@@ -28,6 +29,7 @@ Overtest currently supports:
 .. _Redis: http://redis.io/
 .. _Elasticsearch: https://www.elastic.co/
 .. _ZooKeeper: https://zookeeper.apache.org/
+.. _Gnocchi: http://gnocchi.xyz
 
 Usage
 =====

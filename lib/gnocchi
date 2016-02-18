@@ -1,0 +1,41 @@
+#!/bin/bash
+overtest_find_executable gnocchi-metricd
+overtest_find_executable gnocchi-api
+
+overtest_start_gnocchi ()
+{
+    export OVERTEST_GNOCCHI_DATA=`overtest_make_temp_dir gnocchi`
+    export OVERTEST_GNOCCHI_PORT=${OVERTEST_POSTGRESQL_PORT:-8041}
+    export OVERTEST_GNOCCHI_INDEXER_PORT=${OVERTEST_POSTGRESQL_INDEXER_PORT:-9850}
+    export OVERTEST_GNOCCHI_URL="gnocchi://localhost:8041"
+    export OVERTEST_GNOCCHI_HTTP_URL="http://localhost:8041"
+    mkfifo $OVERTEST_GNOCCHI_DATA/out
+    # Start a PostgreSQL for Gnocchi
+    overtest_load_lib postgresql
+    OVERTEST_POSTGRESQL_PORT=$OVERTEST_GNOCCHI_INDEXER_PORT overtest_start_postgresql
+    cp $(overtest_find_etc gnocchi/api-paste.ini) $OVERTEST_GNOCCHI_DATA
+    cp $(overtest_find_etc gnocchi/policy.json) $OVERTEST_GNOCCHI_DATA
+    cat > ${OVERTEST_GNOCCHI_DATA}/gnocchi.conf <<EOF
+[storage]
+file_basepath = file://${GNOCCHI_DATA}
+driver = file
+coordination_url = ${OVERTEST_POSTGRESQL_URL}
+[indexer]
+url = ${OVERTEST_POSTGRESQL_URL}
+EOF
+    overtest_run gnocchi-upgrade --config-file=${OVERTEST_GNOCCHI_DATA}/gnocchi.conf
+    gnocchi-metricd --config-file=${OVERTEST_GNOCCHI_DATA}/gnocchi.conf > $OVERTEST_OUTPUT 2>&1 &
+    export OVERTEST_GNOCCHI_METRICD_PID=$!
+    gnocchi-api --config-file=${OVERTEST_GNOCCHI_DATA}/gnocchi.conf \
+        &> ${OVERTEST_GNOCCHI_DATA}/out 2>&1 &
+    export OVERTEST_GNOCCHI_API_PID=$!
+    overtest_wait_for_line "Running on http://0.0.0.0:$OVERTEST_GNOCCHI_PORT" ${OVERTEST_GNOCCHI_DATA}/out
+}
+
+overtest_stop_gnocchi ()
+{
+    test -n "$OVERTEST_GNOCCHI_METRICD_PID" && kill "$OVERTEST_GNOCCHI_METRICD_PID"
+    test -n "$OVERTEST_GNOCCHI_API_PID" && kill "$OVERTEST_GNOCCHI_API_PID"
+    rm -rf "${OVERTEST_GNOCCHI_DATA}"
+    OVERTEST_POSTGRESQL_PORT=$OVERTEST_GNOCCHI_INDEXER_PORT overtest_stop_postgresql
+}

@@ -13,8 +13,22 @@ else
     OVERTEST_OUTPUT=/dev/null
 fi
 
+overtest_find_etc ()
+{
+    for dir in ${OVERTEST_ETC_DIRS:-/usr/local/etc /etc}
+    do
+        local x=$dir/$1
+        if test -e $x
+        then
+           echo $x
+           break
+        fi
+    done
+}
+
 overtest_run ()
 {
+    # Do not use this function is you need the PID of the process ($!)
     eval "$@" > $OVERTEST_OUTPUT 2>&1
 }
 
@@ -51,6 +65,17 @@ overtest_usage ()
     done
 }
 
+overtest_load_lib ()
+{
+    local daemon_lib=${OVERTEST_LIBS_PATH}/$1
+    if [ ! -f $daemon_lib ]
+    then
+       echo "E: unknown daemon $1"
+       return 2
+    fi
+    source $daemon_lib
+}
+
 overtest_parse_options ()
 {
     case $1 in
@@ -60,14 +85,8 @@ overtest_parse_options ()
             ;;
     esac
     export OVERTEST_DAEMON=$1
-    local daemon_lib=${OVERTEST_LIBS_PATH}/${OVERTEST_DAEMON}
-    if [ ! -f $daemon_lib ]
-    then
-       echo "E: unknown daemon $OVERTEST_DAEMON"
-       return 2
-    fi
+    overtest_load_lib $OVERTEST_DAEMON
     echo "I: starting $OVERTEST_DAEMON"
-    source $daemon_lib
     trap overtest_stop EXIT
     overtest_start_${OVERTEST_DAEMON}
     local daemon_up=$(echo $OVERTEST_DAEMON | tr '[:lower:]' '[:upper:]')
