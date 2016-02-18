@@ -34,8 +34,8 @@ EOF
 
 overtest_stop_gnocchi ()
 {
-    test -n "$OVERTEST_GNOCCHI_METRICD_PID" && kill "$OVERTEST_GNOCCHI_METRICD_PID"
-    test -n "$OVERTEST_GNOCCHI_API_PID" && kill "$OVERTEST_GNOCCHI_API_PID"
+    overtest_kill "$OVERTEST_GNOCCHI_METRICD_PID"
+    overtest_kill "$OVERTEST_GNOCCHI_API_PID"
     rm -rf "${OVERTEST_GNOCCHI_DATA}"
     OVERTEST_POSTGRESQL_PORT=$OVERTEST_GNOCCHI_INDEXER_PORT overtest_stop_postgresql
 }

@@ -17,6 +17,6 @@ overtest_start_etcd ()
 
 overtest_stop_etcd ()
 {
-    kill $OVERTEST_ETCD_PID
+    overtest_kill "$OVERTEST_ETCD_PID"
     rm -rf ${OVERTEST_ETCD_DATA}
 }

@@ -23,6 +23,6 @@ overtest_start_mongodb ()
 
 overtest_stop_mongodb ()
 {
-    kill $OVERTEST_MONGODB_PID
+    overtest_kill "$OVERTEST_MONGODB_PID"
     rm -rf ${OVERTEST_MONGODB_DATA}
 }

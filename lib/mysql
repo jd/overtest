@@ -24,6 +24,6 @@ overtest_start_mysql ()
 
 overtest_stop_mysql ()
 {
-    kill `cat $OVERTEST_MYSQL_DATA/mysql.pid`
+    overtest_kill "`cat $OVERTEST_MYSQL_DATA/mysql.pid`"
     rm -rf ${OVERTEST_MYSQL_DATA}
 }

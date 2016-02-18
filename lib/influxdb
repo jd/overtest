@@ -35,6 +35,6 @@ EOF
 
 overtest_stop_influxdb ()
 {
-    kill $OVERTEST_INFLUXDB_PID
+    overtest_kill "$OVERTEST_INFLUXDB_PID"
     rm -rf ${OVERTEST_INFLUXDB_DATA}
 }

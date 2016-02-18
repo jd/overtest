@@ -15,6 +15,6 @@ overtest_start_memcached ()
 
 overtest_stop_memcached ()
 {
-    kill $OVERTEST_MEMCACHED_PID
+    overtest_kill "$OVERTEST_MEMCACHED_PID"
     rm -rf ${OVERTEST_MEMCACHED_DATA}
 }

@@ -34,7 +34,7 @@ EOF
 
 overtest_stop_redis ()
 {
-    kill $OVERTEST_REDIS_PID
-    test -n "$OVERTEST_REDIS_SENTINEL_PID" && kill $OVERTEST_REDIS_SENTINEL_PID
+    overtest_kill "$OVERTEST_REDIS_PID"
+    overtest_kill "$OVERTEST_REDIS_SENTINEL_PID"
     rm -rf ${OVERTEST_REDIS_DATA}
 }

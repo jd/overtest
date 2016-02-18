@@ -18,6 +18,6 @@ overtest_start_elasticsearch ()
 
 overtest_stop_elasticsearch ()
 {
-    kill $OVERTEST_ELASTICSEARCH_PID
+    overtest_kill "$OVERTEST_ELASTICSEARCH_PID"
     rm -rf ${OVERTEST_ELASTICSEARCH_DATA}
 }

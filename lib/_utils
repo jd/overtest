@@ -32,6 +32,12 @@ overtest_run ()
     eval "$@" > $OVERTEST_OUTPUT 2>&1
 }
 
+overtest_kill ()
+{
+    # Allow to kill even if the var passed as argument is empty
+    test -n "$1" && kill "$1"
+}
+
 overtest_make_temp_dir ()
 {
     PROJECT=${1:-unknown}
