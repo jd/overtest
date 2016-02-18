@@ -29,7 +29,7 @@ EOF
     # Influxdb distributed rpms and debs install to opt by default
     PATH=$PATH:/opt/influxdb influxd -config $OVERTEST_INFLUXDB_DATA/config > ${OVERTEST_INFLUXDB_DATA}/out 2>&1 &
     OVERTEST_INFLUXDB_PID=$!
-    overtest_wait_for_line "Listening on HTTP" $OVERTEST_INFLUXDB_DATA/out
+    overtest_wait_for_line "Listening on HTTP: \[::\]:$OVERTEST_INFLUXDB_PORT" $OVERTEST_INFLUXDB_DATA/out
     PATH=$PATH:/opt/influxdb influx -port $OVERTEST_INFLUXDB_PORT -execute "CREATE DATABASE ${OVERTEST_INFLUXDB_DATABASE};"
 }
 
