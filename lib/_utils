@@ -15,7 +15,7 @@ fi
 
 overtest_find_etc ()
 {
-    for dir in ${OVERTEST_ETC_DIRS:-/usr/local/etc /etc}
+    for dir in ${OVERTEST_ETC_DIRS:-/usr/local/etc /etc $VIRTUAL_ENV/etc}
     do
         local x=$dir/$1
         if test -e $x
