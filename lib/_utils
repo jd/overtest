@@ -36,6 +36,7 @@ overtest_kill ()
 {
     # Allow to kill even if the var passed as argument is empty
     test -n "$1" && kill "$1"
+    return 0
 }
 
 overtest_make_temp_dir ()
