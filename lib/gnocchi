@@ -6,7 +6,7 @@ overtest_start_gnocchi ()
 {
     export OVERTEST_GNOCCHI_DATA=`overtest_make_temp_dir gnocchi`
     export OVERTEST_GNOCCHI_PORT=${OVERTEST_POSTGRESQL_PORT:-8041}
-    export OVERTEST_GNOCCHI_INDEXER_PORT=${OVERTEST_POSTGRESQL_INDEXER_PORT:-9850}
+    export OVERTEST_GNOCCHI_INDEXER_PORT=${OVERTEST_GNOCCHI_INDEXER_PORT:-9850}
     export OVERTEST_GNOCCHI_URL="gnocchi://localhost:8041"
     export OVERTEST_GNOCCHI_HTTP_URL="http://localhost:8041"
     mkfifo $OVERTEST_GNOCCHI_DATA/out
