@@ -92,8 +92,7 @@ overtest_parse_options ()
             ;;
     esac
     export OVERTEST_DAEMON=$1
-    overtest_load_lib $OVERTEST_DAEMON
-    [ $? =  0 ] || return $?
+    overtest_load_lib $OVERTEST_DAEMON || return $?
     echo "I: starting $OVERTEST_DAEMON"
     trap overtest_stop EXIT
     overtest_start_${OVERTEST_DAEMON}
